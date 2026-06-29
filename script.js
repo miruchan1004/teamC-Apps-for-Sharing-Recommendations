@@ -111,11 +111,23 @@ const initLoginPage = () => {
   const loginForm = document.getElementById("loginForm");
   const userIdInput = document.getElementById("userId");
   const passwordInput = document.getElementById("password");
+  const passwordToggle = document.getElementById("passwordToggle");
   const errorMessage = document.getElementById("errorMessage");
 
-  if (!loginForm || !userIdInput || !passwordInput || !errorMessage) {
+  if (!loginForm || !userIdInput || !passwordInput || !passwordToggle || !errorMessage) {
     return;
   }
+
+  const setPasswordVisibility = (isVisible) => {
+    passwordInput.type = isVisible ? "text" : "password";
+    passwordToggle.textContent = isVisible ? "非表示" : "表示";
+    passwordToggle.setAttribute("aria-pressed", String(isVisible));
+  };
+
+  passwordToggle.addEventListener("click", () => {
+    setPasswordVisibility(passwordInput.type === "password");
+    passwordInput.focus();
+  });
 
   loginForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -130,6 +142,7 @@ const initLoginPage = () => {
       return;
     }
 
+    setPasswordVisibility(true);
     errorMessage.textContent = "ユーザー名またはパスワードが違います。";
   });
 
