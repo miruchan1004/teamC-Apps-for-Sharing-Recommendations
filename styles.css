@@ -1,0 +1,148 @@
+:root {
+  --bg-top: #fff1d6;
+  --bg-bottom: #d7f0e7;
+  --card: rgba(255, 255, 255, 0.9);
+  --text: #1f2937;
+  --muted: #64748b;
+  --accent: #0f766e;
+  --danger: #b91c1c;
+  --shadow: 0 20px 40px rgba(31, 41, 55, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Trebuchet MS", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 15% 20%, rgba(15, 118, 110, 0.18), transparent 28%),
+    radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.22), transparent 35%),
+    linear-gradient(160deg, var(--bg-top), var(--bg-bottom));
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.card {
+  width: min(100%, 420px);
+  border-radius: 24px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  padding: 28px 24px;
+  backdrop-filter: blur(8px);
+}
+
+.view {
+  display: none;
+}
+
+.view.is-active {
+  display: block;
+  animation: slideFade 220ms ease-out;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 1.6rem;
+  letter-spacing: 0.02em;
+}
+
+.subtitle {
+  margin: 0 0 22px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.form {
+  display: grid;
+  gap: 14px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+input {
+  border: 1px solid rgba(15, 118, 110, 0.25);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 1rem;
+  color: var(--text);
+  background: #ffffff;
+}
+
+input:focus-visible {
+  outline: 3px solid rgba(15, 118, 110, 0.25);
+  border-color: var(--accent);
+}
+
+button {
+  margin-top: 6px;
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: linear-gradient(120deg, #0f766e, #0d9488);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.error {
+  min-height: 1.2em;
+  margin: 2px 0 0;
+  color: var(--danger);
+  font-size: 0.88rem;
+}
+
+.name-panel {
+  border-radius: 16px;
+  background: rgba(15, 118, 110, 0.1);
+  padding: 18px 16px;
+  text-align: center;
+  font-size: 1.06rem;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+.back {
+  margin-top: 20px;
+  width: 100%;
+  background: #ffffff;
+  color: var(--accent);
+  border: 1px solid rgba(15, 118, 110, 0.25);
+}
+
+@keyframes slideFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 0;
+  }
+
+  .card {
+    min-height: 100vh;
+    width: 100%;
+    border-radius: 0;
+    display: grid;
+    align-content: center;
+  }
+}
