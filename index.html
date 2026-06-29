@@ -62,7 +62,7 @@
     }
 
     .screen__body {
-      min-height: inherit;
+      min-height: 0;
       display: grid;
       grid-template-rows: 1fr auto;
       padding: 28px 20px 20px;
@@ -73,6 +73,7 @@
     .view {
       display: none;
       height: 100%;
+      min-height: 0;
       align-content: center;
     }
 
@@ -83,15 +84,86 @@
     }
 
     .home-view {
-      justify-items: center;
-      align-content: end;
-      padding-bottom: 12px;
+      justify-items: stretch;
+      align-content: stretch;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 14px;
+      padding-bottom: 0;
     }
 
     .home-copy {
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: var(--muted);
-      text-align: center;
+      text-align: left;
+      line-height: 1.6;
+    }
+
+    .home-feed {
+      display: grid;
+      gap: 14px;
+      min-height: 0;
+      overflow-y: auto;
+      padding-right: 4px;
+      scroll-snap-type: y mandatory;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(15, 118, 110, 0.32) transparent;
+    }
+
+    .home-feed::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .home-feed::-webkit-scrollbar-thumb {
+      background: rgba(15, 118, 110, 0.28);
+      border-radius: 999px;
+    }
+
+    .photo-card {
+      position: relative;
+      min-height: calc(100vh - 180px);
+      border-radius: 26px;
+      overflow: hidden;
+      background: #e5e7eb;
+      box-shadow: 0 16px 36px rgba(31, 41, 55, 0.12);
+      scroll-snap-align: start;
+    }
+
+    .photo-card img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(17, 24, 39, 0.06) 0%, rgba(17, 24, 39, 0.22) 72%, rgba(17, 24, 39, 0.6) 100%);
+      pointer-events: none;
+    }
+
+    .photo-card__caption {
+      position: absolute;
+      inset: auto 18px 18px;
+      z-index: 1;
+      display: grid;
+      gap: 6px;
+      color: #fff;
+    }
+
+    .photo-card__title {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .photo-card__meta {
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.88);
     }
 
     .search-view {
@@ -211,7 +283,8 @@
     <section class="screen" aria-label="アプリ画面">
       <div class="screen__body">
         <div class="view home-view is-active" data-view="home" aria-label="ホーム画面">
-          <div class="home-copy">アプリを開くとホーム画面が表示されます。</div>
+          <div class="home-copy">かわいい動物を1枚ずつ見られるように、縦にスクロールできるホームフィードにしています。</div>
+          <div class="home-feed" data-home-feed></div>
         </div>
 
         <div class="view search-view" data-view="search" aria-label="検索画面">
@@ -240,6 +313,50 @@
   <script>
     const navButtons = Array.from(document.querySelectorAll(".nav button"));
     const views = Array.from(document.querySelectorAll(".view"));
+    const homeFeed = document.querySelector("[data-home-feed]");
+
+    const photoItems = [
+      {
+        title: "まったり子ねこ",
+        meta: "やわらかい光の中でくつろぐ、最初の1枚です。",
+        src: "https://loremflickr.com/900/1200/cat?lock=1",
+        alt: "くつろいでいる子ねこ",
+      },
+      {
+        title: "にっこりわんこ",
+        meta: "見ているだけで気分がほどける、元気な表情の犬です。",
+        src: "https://loremflickr.com/900/1200/dog?lock=2",
+        alt: "笑っているように見える犬",
+      },
+      {
+        title: "ふわふわうさぎ",
+        meta: "やさしい色合いの動物写真をそのまま1枚表示します。",
+        src: "https://loremflickr.com/900/1200/rabbit?lock=3",
+        alt: "ふわふわのうさぎ",
+      },
+      {
+        title: "ちいさなハリネズミ",
+        meta: "スクロールするたびに次の写真が現れる構成です。",
+        src: "https://loremflickr.com/900/1200/hedgehog?lock=4",
+        alt: "小さなハリネズミ",
+      },
+    ];
+
+    if (homeFeed) {
+      homeFeed.innerHTML = photoItems
+        .map(
+          (item) => `
+            <article class="photo-card">
+              <img src="${item.src}" alt="${item.alt}" loading="lazy" />
+              <div class="photo-card__caption">
+                <h2 class="photo-card__title">${item.title}</h2>
+                <p class="photo-card__meta">${item.meta}</p>
+              </div>
+            </article>
+          `,
+        )
+        .join("");
+    }
 
     const setActiveView = (target) => {
       navButtons.forEach((button) => {
