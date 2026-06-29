@@ -6,37 +6,37 @@ const photoItems = [
   {
     title: "のんびりねこ",
     meta: "ふわっとした毛並みが目を引く、人気の1枚です。",
-    src: "https://loremflickr.com/900/1200/cat?lock=1",
+    src: "https://loremflickr.com/900/1200/animal?lock=1",
     alt: "座ってくつろぐ猫",
   },
   {
     title: "まるいこいぬ",
     meta: "見ているだけでやわらかい気持ちになる投稿です。",
-    src: "https://loremflickr.com/900/1200/dog?lock=2",
+    src: "https://loremflickr.com/900/1200/animal?lock=2",
     alt: "芝生の上の子犬",
   },
   {
     title: "もこもこうさぎ",
     meta: "小さな耳がかわいい、癒やし系の1枚です。",
-    src: "https://loremflickr.com/900/1200/rabbit?lock=3",
+    src: "https://loremflickr.com/900/1200/animal?lock=3",
     alt: "立ち止まるうさぎ",
   },
   {
     title: "ふわっとパンダ",
     meta: "ゆったりした雰囲気が伝わる、定番の人気投稿です。",
-    src: "https://loremflickr.com/900/1200/panda?lock=4",
+    src: "https://loremflickr.com/900/1200/animal?lock=4",
     alt: "木のそばにいるパンダ",
   },
   {
     title: "きょろきょろふくろう",
     meta: "くりっとした目が印象的で、見返したくなる1枚です。",
-    src: "https://loremflickr.com/900/1200/owl?lock=5",
+    src: "https://loremflickr.com/900/1200/animal?lock=5",
     alt: "枝にとまるふくろう",
   },
   {
     title: "すやすやしろくま",
     meta: "穏やかな表情で、最後に見たくなる投稿です。",
-    src: "https://loremflickr.com/900/1200/bear?lock=6",
+    src: "https://loremflickr.com/900/1200/animal?lock=6",
     alt: "くつろぐしろくま",
   },
 ];
