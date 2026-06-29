@@ -3,80 +3,101 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>teamC-Apps-for-Sharing-Recommendations</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
 
-    <section class="view" data-view="name">
-      <h1>名前表示画面</h1>
-      <p class="subtitle">ログイン情報を確認しました</p>
-      <div class="name-panel" id="namePanel"></div>
-      <button type="button" class="back" id="backButton">戻る</button>
+<body>
+  <main class="app" aria-label="teamC アプリ">
+    <section class="screen">
+      <div class="screen__body">
+        <section class="view login-view is-active" data-view="login" aria-label="ログイン画面">
+          <h1>ログイン</h1>
+          <p class="subtitle">IDとパスワードを入力してください</p>
+
+          <form class="form" id="loginForm" novalidate>
+            <label for="userId">
+              ID入力
+              <input id="userId" name="userId" type="text" autocomplete="username" required />
+            </label>
+
+            <label for="password">
+              パスワード入力
+              <input id="password" name="password" type="password" autocomplete="current-password" required />
+            </label>
+
+            <button type="submit">ログイン</button>
+            <p class="error" id="errorMessage" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="view home-view" data-view="home" aria-label="ホーム画面">
+          <p class="home-copy">みんなのおすすめを1枚ずつ見られる、縦スクロールのフィードです。</p>
+          <div class="home-feed" data-home-feed></div>
+        </section>
+
+        <section class="view search-view" data-view="search" aria-label="検索画面">
+          <div class="search-field">渋谷 カフェ 静か</div>
+          <div class="search-section">
+            <h2 class="section-heading">最近の検索</h2>
+            <div class="chip-list">
+              <span class="chip">カフェ</span>
+              <span class="chip">ランチ</span>
+              <span class="chip">週末のおでかけ</span>
+              <span class="chip">穴場スポット</span>
+            </div>
+          </div>
+          <div class="search-section">
+            <h2 class="section-heading">おすすめ候補</h2>
+            <div class="section-list compact">
+              <div class="section-item">駅近でゆっくりできるカフェ</div>
+              <div class="section-item">写真映えするランチスポット</div>
+              <div class="section-item">ひとりでも入りやすい店</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view mypage-view" data-view="mypage" aria-label="マイページ画面">
+          <div class="profile-card">
+            <div class="profile-avatar">R</div>
+            <div>
+              <div class="profile-name">Rina / @rina_reco</div>
+              <div class="profile-bio">行ってよかった場所をまとめて共有。カフェ、ランチ、週末の小さなおでかけが中心です。</div>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <span class="stat-value">128</span>
+              <span class="stat-label">投稿</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value">842</span>
+              <span class="stat-label">フォロワー</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value">61</span>
+              <span class="stat-label">保存</span>
+            </div>
+          </div>
+          <div class="search-section">
+            <h2 class="section-heading">最近見た投稿</h2>
+            <div class="section-list compact">
+              <div class="section-item">中目黒の静かなカフェ</div>
+              <div class="section-item">下北沢の週末ランチ</div>
+              <div class="section-item">代々木公園の散歩コース</div>
+            </div>
+          </div>
+        </section>
+
+        <nav class="nav" aria-label="画面切り替え" hidden>
+          <button type="button" data-target="home" class="is-active" aria-pressed="true">ホーム</button>
+          <button type="button" data-target="search" aria-pressed="false">検索</button>
+          <button type="button" data-target="mypage" aria-pressed="false">マイページ</button>
+        </nav>
+      </div>
     </section>
   </main>
 
   <script src="script.js"></script>
-    const navButtons = Array.from(document.querySelectorAll(".nav button"));
-    const views = Array.from(document.querySelectorAll(".view"));
-    const homeFeed = document.querySelector("[data-home-feed]");
-
-    const photoItems = [
-      {
-        title: "まったり子ねこ",
-        meta: "やわらかい光の中でくつろぐ、最初の1枚です。",
-        src: "https://loremflickr.com/900/1200/cat?lock=1",
-        alt: "くつろいでいる子ねこ",
-      },
-      {
-        title: "にっこりわんこ",
-        meta: "見ているだけで気分がほどける、元気な表情の犬です。",
-        src: "https://loremflickr.com/900/1200/dog?lock=2",
-        alt: "笑っているように見える犬",
-      },
-      {
-        title: "ふわふわうさぎ",
-        meta: "やさしい色合いの動物写真をそのまま1枚表示します。",
-        src: "https://loremflickr.com/900/1200/rabbit?lock=3",
-        alt: "ふわふわのうさぎ",
-      },
-      {
-        title: "ちいさなハリネズミ",
-        meta: "スクロールするたびに次の写真が現れる構成です。",
-        src: "https://loremflickr.com/900/1200/hedgehog?lock=4",
-        alt: "小さなハリネズミ",
-      },
-    ];
-
-    if (homeFeed) {
-      homeFeed.innerHTML = photoItems
-        .map(
-          (item) => `
-            <article class="photo-card">
-              <img src="${item.src}" alt="${item.alt}" loading="lazy" />
-              <div class="photo-card__caption">
-                <h2 class="photo-card__title">${item.title}</h2>
-                <p class="photo-card__meta">${item.meta}</p>
-              </div>
-            </article>
-          `,
-        )
-        .join("");
-    }
-
-    const setActiveView = (target) => {
-      navButtons.forEach((button) => {
-        const isActive = button.dataset.target === target;
-        button.classList.toggle("is-active", isActive);
-        button.setAttribute("aria-pressed", String(isActive));
-      });
-
-      views.forEach((view) => {
-        view.classList.toggle("is-active", view.dataset.view === target);
-      });
-    };
-
-    navButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        setActiveView(button.dataset.target);
-      });
-    });
-  </script>
 </body>
 </html>
