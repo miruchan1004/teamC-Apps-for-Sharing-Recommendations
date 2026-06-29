@@ -3,30 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ログイン画面</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <main class="card" aria-label="ログイン画面">
-    <section class="view is-active" data-view="login">
-      <h1>ログイン</h1>
-      <p class="subtitle">IDとパスワードを入力してください</p>
-
-      <form class="form" id="loginForm" novalidate>
-        <label for="userId">
-          ID入力
-          <input id="userId" name="userId" type="text" autocomplete="username" required />
-        </label>
-
-        <label for="password">
-          パスワード入力
-          <input id="password" name="password" type="password" autocomplete="current-password" required />
-        </label>
-
-        <button type="submit">ログイン</button>
-        <p class="error" id="errorMessage" aria-live="polite"></p>
-      </form>
-    </section>
 
     <section class="view" data-view="name">
       <h1>名前表示画面</h1>
@@ -37,5 +13,70 @@
   </main>
 
   <script src="script.js"></script>
+    const navButtons = Array.from(document.querySelectorAll(".nav button"));
+    const views = Array.from(document.querySelectorAll(".view"));
+    const homeFeed = document.querySelector("[data-home-feed]");
+
+    const photoItems = [
+      {
+        title: "まったり子ねこ",
+        meta: "やわらかい光の中でくつろぐ、最初の1枚です。",
+        src: "https://loremflickr.com/900/1200/cat?lock=1",
+        alt: "くつろいでいる子ねこ",
+      },
+      {
+        title: "にっこりわんこ",
+        meta: "見ているだけで気分がほどける、元気な表情の犬です。",
+        src: "https://loremflickr.com/900/1200/dog?lock=2",
+        alt: "笑っているように見える犬",
+      },
+      {
+        title: "ふわふわうさぎ",
+        meta: "やさしい色合いの動物写真をそのまま1枚表示します。",
+        src: "https://loremflickr.com/900/1200/rabbit?lock=3",
+        alt: "ふわふわのうさぎ",
+      },
+      {
+        title: "ちいさなハリネズミ",
+        meta: "スクロールするたびに次の写真が現れる構成です。",
+        src: "https://loremflickr.com/900/1200/hedgehog?lock=4",
+        alt: "小さなハリネズミ",
+      },
+    ];
+
+    if (homeFeed) {
+      homeFeed.innerHTML = photoItems
+        .map(
+          (item) => `
+            <article class="photo-card">
+              <img src="${item.src}" alt="${item.alt}" loading="lazy" />
+              <div class="photo-card__caption">
+                <h2 class="photo-card__title">${item.title}</h2>
+                <p class="photo-card__meta">${item.meta}</p>
+              </div>
+            </article>
+          `,
+        )
+        .join("");
+    }
+
+    const setActiveView = (target) => {
+      navButtons.forEach((button) => {
+        const isActive = button.dataset.target === target;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+
+      views.forEach((view) => {
+        view.classList.toggle("is-active", view.dataset.view === target);
+      });
+    };
+
+    navButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        setActiveView(button.dataset.target);
+      });
+    });
+  </script>
 </body>
 </html>
