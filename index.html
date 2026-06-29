@@ -167,10 +167,114 @@
     }
 
     .search-view {
-      justify-items: center;
+      justify-items: stretch;
       align-content: start;
       padding-top: 36px;
       gap: 14px;
+    }
+
+    .search-input {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid rgba(15, 118, 110, 0.16);
+      background: #fff;
+      padding: 15px 18px;
+      color: var(--text);
+      text-align: center;
+      box-shadow: 0 10px 24px rgba(31, 41, 55, 0.07);
+      font: inherit;
+    }
+
+    .search-input::placeholder {
+      color: var(--muted);
+    }
+
+    .search-input:focus-visible {
+      outline: 3px solid rgba(15, 118, 110, 0.28);
+      outline-offset: 2px;
+    }
+
+    .search-history {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 30px;
+    }
+
+    .history-chip {
+      appearance: none;
+      border: 1px solid rgba(15, 118, 110, 0.16);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 0.88rem;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    .search-results {
+      display: grid;
+      gap: 10px;
+      min-height: 0;
+      max-height: 350px;
+      overflow-y: auto;
+      padding-right: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(15, 118, 110, 0.32) transparent;
+    }
+
+    .search-results::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .search-results::-webkit-scrollbar-thumb {
+      background: rgba(15, 118, 110, 0.28);
+      border-radius: 999px;
+    }
+
+    .search-card {
+      display: grid;
+      grid-template-columns: 86px 1fr;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(15, 118, 110, 0.1);
+      border-radius: 16px;
+      overflow: hidden;
+      padding: 8px;
+    }
+
+    .search-card img {
+      width: 86px;
+      height: 66px;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #e5e7eb;
+    }
+
+    .search-card__title {
+      margin: 0;
+      font-size: 0.98rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .search-card__meta {
+      margin: 4px 0 0;
+      font-size: 0.84rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .search-empty {
+      margin: 0;
+      text-align: center;
+      color: var(--muted);
+      padding: 20px 10px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(15, 118, 110, 0.1);
     }
 
     .mypage-view {
@@ -288,8 +392,10 @@
         </div>
 
         <div class="view search-view" data-view="search" aria-label="検索画面">
-          <div class="search-field">検索欄</div>
+          <input class="search-input" type="search" data-search-input placeholder="動物名で検索（例: 犬、猫）" aria-label="動物検索" />
           <div class="label-box">検索履歴</div>
+          <div class="search-history" data-search-history></div>
+          <div class="search-results" data-search-results aria-live="polite"></div>
         </div>
 
         <div class="view mypage-view" data-view="mypage" aria-label="マイページ画面">
@@ -314,6 +420,9 @@
     const navButtons = Array.from(document.querySelectorAll(".nav button"));
     const views = Array.from(document.querySelectorAll(".view"));
     const homeFeed = document.querySelector("[data-home-feed]");
+    const searchInput = document.querySelector("[data-search-input]");
+    const searchHistory = document.querySelector("[data-search-history]");
+    const searchResults = document.querySelector("[data-search-results]");
 
     const photoItems = [
       {
@@ -342,6 +451,31 @@
       },
     ];
 
+    const searchPhotoItems = [
+      { title: "のんびり子猫", meta: "日向ぼっこ中の猫", src: "https://loremflickr.com/640/480/cat?lock=11", alt: "日向ぼっこをする猫" },
+      { title: "甘えんぼ猫", meta: "カメラを見つめる猫", src: "https://loremflickr.com/640/480/cat?lock=12", alt: "見つめる猫" },
+      { title: "元気な犬", meta: "公園で遊ぶわんこ", src: "https://loremflickr.com/640/480/dog?lock=13", alt: "走る犬" },
+      { title: "笑顔の犬", meta: "にっこりした表情", src: "https://loremflickr.com/640/480/dog?lock=14", alt: "笑顔の犬" },
+      { title: "ふわふわうさぎ", meta: "小さなうさぎのアップ", src: "https://loremflickr.com/640/480/rabbit?lock=15", alt: "うさぎ" },
+      { title: "森のリス", meta: "木の上のリス", src: "https://loremflickr.com/640/480/squirrel?lock=16", alt: "リス" },
+      { title: "かわいいハムスター", meta: "ひまわりの種を持つ", src: "https://loremflickr.com/640/480/hamster?lock=17", alt: "ハムスター" },
+      { title: "ころころハリネズミ", meta: "丸まった姿がかわいい", src: "https://loremflickr.com/640/480/hedgehog?lock=18", alt: "ハリネズミ" },
+      { title: "お昼寝パンダ", meta: "ゆったり眠る姿", src: "https://loremflickr.com/640/480/panda?lock=19", alt: "パンダ" },
+      { title: "やさしいコアラ", meta: "木につかまるコアラ", src: "https://loremflickr.com/640/480/koala?lock=20", alt: "コアラ" },
+      { title: "小さな小鳥", meta: "枝に止まる小鳥", src: "https://loremflickr.com/640/480/bird?lock=21", alt: "小鳥" },
+      { title: "白いアルパカ", meta: "もこもこな毛並み", src: "https://loremflickr.com/640/480/alpaca?lock=22", alt: "アルパカ" },
+      { title: "もふもふひつじ", meta: "草原で過ごす羊", src: "https://loremflickr.com/640/480/sheep?lock=23", alt: "羊" },
+      { title: "ちいさなヤギ", meta: "元気いっぱいの子ヤギ", src: "https://loremflickr.com/640/480/goat?lock=24", alt: "ヤギ" },
+      { title: "凛々しい馬", meta: "風になびくたてがみ", src: "https://loremflickr.com/640/480/horse?lock=25", alt: "馬" },
+      { title: "泳ぐイルカ", meta: "青い海のイルカ", src: "https://loremflickr.com/640/480/dolphin?lock=26", alt: "イルカ" },
+      { title: "まんまるアザラシ", meta: "氷の上で休む", src: "https://loremflickr.com/640/480/seal?lock=27", alt: "アザラシ" },
+      { title: "わくわくペンギン", meta: "よちよち歩き", src: "https://loremflickr.com/640/480/penguin?lock=28", alt: "ペンギン" },
+      { title: "気ままなきつね", meta: "草原を歩くキツネ", src: "https://loremflickr.com/640/480/fox?lock=29", alt: "キツネ" },
+      { title: "夜のふくろう", meta: "静かにたたずむ", src: "https://loremflickr.com/640/480/owl?lock=30", alt: "フクロウ" },
+    ];
+
+    const searchHistoryTerms = [];
+
     if (homeFeed) {
       homeFeed.innerHTML = photoItems
         .map(
@@ -357,6 +491,103 @@
         )
         .join("");
     }
+
+    const matchesKeyword = (item, keyword) => {
+      if (!keyword) {
+        return true;
+      }
+
+      const normalizedKeyword = keyword.toLowerCase();
+      return [item.title, item.meta, item.alt]
+        .some((text) => text.toLowerCase().includes(normalizedKeyword));
+    };
+
+    const renderSearchHistory = () => {
+      if (!searchHistory) {
+        return;
+      }
+
+      if (searchHistoryTerms.length === 0) {
+        searchHistory.innerHTML = '<p class="search-card__meta">まだ履歴はありません</p>';
+        return;
+      }
+
+      searchHistory.innerHTML = searchHistoryTerms
+        .map((term) => `<button type="button" class="history-chip" data-term="${term}">${term}</button>`)
+        .join("");
+    };
+
+    const renderSearchResults = (keyword) => {
+      if (!searchResults) {
+        return;
+      }
+
+      const normalizedKeyword = keyword.trim().toLowerCase();
+      const filteredItems = searchPhotoItems.filter((item) => matchesKeyword(item, normalizedKeyword));
+
+      if (filteredItems.length === 0) {
+        searchResults.innerHTML = '<p class="search-empty">該当する写真がありません。別のキーワードを試してください。</p>';
+        return;
+      }
+
+      searchResults.innerHTML = filteredItems
+        .map(
+          (item) => `
+            <article class="search-card">
+              <img src="${item.src}" alt="${item.alt}" loading="lazy" />
+              <div>
+                <h3 class="search-card__title">${item.title}</h3>
+                <p class="search-card__meta">${item.meta}</p>
+              </div>
+            </article>
+          `,
+        )
+        .join("");
+    };
+
+    const addHistoryTerm = (term) => {
+      if (!term) {
+        return;
+      }
+
+      const existingIndex = searchHistoryTerms.indexOf(term);
+      if (existingIndex >= 0) {
+        searchHistoryTerms.splice(existingIndex, 1);
+      }
+
+      searchHistoryTerms.unshift(term);
+      searchHistoryTerms.splice(5);
+      renderSearchHistory();
+    };
+
+    if (searchInput) {
+      searchInput.addEventListener("input", () => {
+        renderSearchResults(searchInput.value);
+      });
+
+      searchInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          addHistoryTerm(searchInput.value.trim());
+        }
+      });
+    }
+
+    if (searchHistory) {
+      searchHistory.addEventListener("click", (event) => {
+        const target = event.target.closest(".history-chip");
+
+        if (!target || !searchInput) {
+          return;
+        }
+
+        const term = target.dataset.term || "";
+        searchInput.value = term;
+        renderSearchResults(term);
+      });
+    }
+
+    renderSearchHistory();
+    renderSearchResults("");
 
     const setActiveView = (target) => {
       navButtons.forEach((button) => {
