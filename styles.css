@@ -105,6 +105,67 @@ label {
   font-weight: 700;
 }
 
+.password-field {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.password-field input {
+  width: 100%;
+}
+
+.password-toggle {
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: #ffffff;
+  color: var(--accent);
+}
+
+.password-toggle:hover {
+  background: rgba(15, 118, 110, 0.08);
+}
+
+.password-toggle__icon {
+  width: 22px;
+  height: 22px;
+}
+
+.password-toggle__icon--eye-off {
+  display: none;
+}
+
+.password-toggle.is-visible .password-toggle__icon--eye {
+  display: none;
+}
+
+.password-toggle.is-visible .password-toggle__icon--eye-off {
+  display: block;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.password-toggle:focus-visible {
+  outline: 3px solid rgba(15, 118, 110, 0.28);
+  outline-offset: 1px;
+}
+
 input {
   border: 1px solid rgba(15, 118, 110, 0.16);
   border-radius: 14px;
@@ -253,9 +314,12 @@ button {
 }
 
 .mypage-view {
-  justify-items: center;
-  align-content: center;
+  justify-items: stretch;
+  align-content: start;
   gap: 14px;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .label-box {
@@ -309,6 +373,46 @@ button {
   background: rgba(255, 255, 255, 0.88);
   border: 1px solid rgba(15, 118, 110, 0.1);
   box-shadow: 0 10px 24px rgba(31, 41, 55, 0.08);
+}
+
+.library-box {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(15, 118, 110, 0.12);
+}
+
+.library-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.library-tab {
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  background: #fff;
+  color: var(--muted);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.library-tab.is-active {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: rgba(15, 118, 110, 0.28);
+}
+
+.library-panel {
+  display: none;
+}
+
+.library-panel.is-active {
+  display: block;
 }
 
 .profile-avatar {
@@ -428,5 +532,10 @@ button {
 
   .photo-card {
     min-height: calc(100vh - 170px);
+  }
+
+  .password-toggle {
+    width: 42px;
+    height: 42px;
   }
 }

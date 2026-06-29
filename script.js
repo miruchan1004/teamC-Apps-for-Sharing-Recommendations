@@ -1,4 +1,5 @@
 const AUTH_STORAGE_KEY = "teamCLoggedIn";
+const USERNAME_STORAGE_KEY = "teamCUsername";
 const VALID_USERNAME = "user";
 const VALID_PASSWORD = "password";
 
@@ -51,11 +52,21 @@ const suggestedQueries = [
 
 const recentPosts = ["中目黒の静かなカフェ", "下北沢の週末ランチ", "代々木公園の散歩コース"];
 
+const likedPosts = ["横浜の海沿いカフェ", "代官山の穴場ベーカリー", "中目黒の静かなカフェ"];
+
+const savedPosts = ["下北沢の週末ランチ", "新宿の夜カフェ", "代々木公園の散歩コース"];
+
 const isAuthed = () => sessionStorage.getItem(AUTH_STORAGE_KEY) === "true";
 
-const setAuthed = () => {
+const setAuthed = (username) => {
   sessionStorage.setItem(AUTH_STORAGE_KEY, "true");
+  sessionStorage.setItem(USERNAME_STORAGE_KEY, username);
 };
+
+const getStoredUsername = () => sessionStorage.getItem(USERNAME_STORAGE_KEY) || VALID_USERNAME;
+
+const toItemMarkup = (items) =>
+  items.map((item) => `<div class="section-item">${item}</div>`).join("");
 
 const renderFeed = (homeFeed) => {
   if (!homeFeed) {
@@ -99,22 +110,84 @@ const renderMyPageData = (myPageSection) => {
     return;
   }
 
-  const recentPostList = myPageSection.querySelector('.section-list.compact');
-  if (recentPostList) {
-    recentPostList.innerHTML = recentPosts
-      .map((item) => `<div class="section-item">${item}</div>`)
-      .join("");
+  const username = getStoredUsername();
+  const usernameDisplay = myPageSection.querySelector("[data-username]");
+  const profileAvatar = myPageSection.querySelector("[data-profile-avatar]");
+  const recentPostList = myPageSection.querySelector("[data-recent-list]");
+  const likesList = myPageSection.querySelector("[data-likes-list]");
+  const savedList = myPageSection.querySelector("[data-saved-list]");
+
+  if (usernameDisplay) {
+    usernameDisplay.textContent = `@${username}`;
   }
+
+  if (profileAvatar) {
+    profileAvatar.textContent = username.charAt(0).toUpperCase();
+  }
+
+  if (recentPostList) {
+    recentPostList.innerHTML = toItemMarkup(recentPosts);
+  }
+
+  if (likesList) {
+    likesList.innerHTML = toItemMarkup(likedPosts);
+  }
+
+  if (savedList) {
+    savedList.innerHTML = toItemMarkup(savedPosts);
+  }
+};
+
+const initMyPageLibraryTabs = (myPageSection) => {
+  if (!myPageSection) {
+    return;
+  }
+
+  const tabs = Array.from(myPageSection.querySelectorAll("[data-library-tab]"));
+  const panels = Array.from(myPageSection.querySelectorAll("[data-library-panel]"));
+
+  const showPanel = (target) => {
+    tabs.forEach((tab) => {
+      const isActive = tab.dataset.libraryTab === target;
+      tab.classList.toggle("is-active", isActive);
+      tab.setAttribute("aria-selected", String(isActive));
+    });
+
+    panels.forEach((panel) => {
+      const isActive = panel.dataset.libraryPanel === target;
+      panel.classList.toggle("is-active", isActive);
+      panel.hidden = !isActive;
+    });
+  };
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      showPanel(tab.dataset.libraryTab);
+    });
+  });
 };
 
 const initLoginPage = () => {
   const loginForm = document.getElementById("loginForm");
   const userIdInput = document.getElementById("userId");
   const passwordInput = document.getElementById("password");
+  const passwordToggle = document.getElementById("passwordToggle");
   const errorMessage = document.getElementById("errorMessage");
 
   if (!loginForm || !userIdInput || !passwordInput || !errorMessage) {
     return;
+  }
+
+  if (passwordToggle) {
+    passwordToggle.addEventListener("click", () => {
+      const isHidden = passwordInput.type === "password";
+      passwordInput.type = isHidden ? "text" : "password";
+      passwordToggle.setAttribute("aria-pressed", String(isHidden));
+      passwordToggle.classList.toggle("is-visible", isHidden);
+      passwordToggle.setAttribute("aria-label", isHidden ? "パスワードを隠す" : "パスワードを表示");
+      passwordToggle.setAttribute("title", isHidden ? "パスワードを隠す" : "パスワードを表示");
+      passwordInput.focus();
+    });
   }
 
   loginForm.addEventListener("submit", (event) => {
@@ -125,7 +198,7 @@ const initLoginPage = () => {
 
     if (userId === VALID_USERNAME && password === VALID_PASSWORD) {
       errorMessage.textContent = "";
-      setAuthed();
+      setAuthed(userId);
       window.location.href = "home.html";
       return;
     }
@@ -171,6 +244,7 @@ const initHomePage = () => {
   renderFeed(homeFeed);
   renderSearchData(searchSection);
   renderMyPageData(myPageSection);
+  initMyPageLibraryTabs(myPageSection);
 
   navButtons.forEach((button) => {
     button.addEventListener("click", () => {

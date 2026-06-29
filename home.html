@@ -39,9 +39,9 @@
 
         <section class="view mypage-view" data-view="mypage" aria-label="マイページ画面">
           <div class="profile-card">
-            <div class="profile-avatar">R</div>
+            <div class="profile-avatar" data-profile-avatar>U</div>
             <div>
-              <div class="profile-name">Rina / @rina_reco</div>
+              <div class="profile-name">ユーザーネーム: <span data-username>@user</span></div>
               <div class="profile-bio">行ってよかった場所をまとめて共有。カフェ、ランチ、週末の小さなおでかけが中心です。</div>
             </div>
           </div>
@@ -60,8 +60,23 @@
             </div>
           </div>
           <div class="search-section">
+            <h2 class="section-heading">いいね・保存したもの</h2>
+            <div class="library-box" aria-label="いいねと保存の閲覧">
+              <div class="library-tabs" role="tablist" aria-label="いいねと保存の切り替え">
+                <button type="button" class="library-tab is-active" role="tab" aria-selected="true" data-library-tab="likes">いいね</button>
+                <button type="button" class="library-tab" role="tab" aria-selected="false" data-library-tab="saved">保存</button>
+              </div>
+              <div class="library-panel is-active" role="tabpanel" data-library-panel="likes">
+                <div class="section-list compact" data-likes-list></div>
+              </div>
+              <div class="library-panel" role="tabpanel" data-library-panel="saved" hidden>
+                <div class="section-list compact" data-saved-list></div>
+              </div>
+            </div>
+          </div>
+          <div class="search-section">
             <h2 class="section-heading">最近見た投稿</h2>
-            <div class="section-list compact">
+            <div class="section-list compact" data-recent-list>
               <div class="section-item">中目黒の静かなカフェ</div>
               <div class="section-item">下北沢の週末ランチ</div>
               <div class="section-item">代々木公園の散歩コース</div>
