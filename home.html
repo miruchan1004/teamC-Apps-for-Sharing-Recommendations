@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>teamC-Apps-for-Sharing-Recommendations</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <main class="app" aria-label="teamC アプリ">
+    <section class="screen">
+      <div class="screen__body">
+        <section class="view home-view is-active" data-view="home" aria-label="ホーム画面">
+          <p class="home-copy">みんなのおすすめを1枚ずつ見られる、縦スクロールのフィードです。</p>
+          <div class="home-feed" data-home-feed></div>
+        </section>
+
+        <section class="view search-view" data-view="search" aria-label="検索画面">
+          <div class="search-field">渋谷 カフェ 静か</div>
+          <div class="search-section">
+            <h2 class="section-heading">最近の検索</h2>
+            <div class="chip-list">
+              <span class="chip">カフェ</span>
+              <span class="chip">ランチ</span>
+              <span class="chip">週末のおでかけ</span>
+              <span class="chip">穴場スポット</span>
+            </div>
+          </div>
+          <div class="search-section">
+            <h2 class="section-heading">おすすめ候補</h2>
+            <div class="section-list compact">
+              <div class="section-item">駅近でゆっくりできるカフェ</div>
+              <div class="section-item">写真映えするランチスポット</div>
+              <div class="section-item">ひとりでも入りやすい店</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view mypage-view" data-view="mypage" aria-label="マイページ画面">
+          <div class="profile-card">
+            <div class="profile-avatar">R</div>
+            <div>
+              <div class="profile-name">Rina / @rina_reco</div>
+              <div class="profile-bio">行ってよかった場所をまとめて共有。カフェ、ランチ、週末の小さなおでかけが中心です。</div>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <span class="stat-value">128</span>
+              <span class="stat-label">投稿</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value">842</span>
+              <span class="stat-label">フォロワー</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value">61</span>
+              <span class="stat-label">保存</span>
+            </div>
+          </div>
+          <div class="search-section">
+            <h2 class="section-heading">最近見た投稿</h2>
+            <div class="section-list compact">
+              <div class="section-item">中目黒の静かなカフェ</div>
+              <div class="section-item">下北沢の週末ランチ</div>
+              <div class="section-item">代々木公園の散歩コース</div>
+            </div>
+          </div>
+        </section>
+
+        <nav class="nav" aria-label="画面切り替え">
+          <button type="button" data-target="home" class="is-active" aria-pressed="true">ホーム</button>
+          <button type="button" data-target="search" aria-pressed="false">検索</button>
+          <button type="button" data-target="mypage" aria-pressed="false">マイページ</button>
+        </nav>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
