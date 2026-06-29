@@ -1,11 +1,6 @@
-const views = Array.from(document.querySelectorAll(".view"));
-const nav = document.querySelector(".nav");
-const navButtons = Array.from(document.querySelectorAll(".nav button"));
-const loginForm = document.getElementById("loginForm");
-const userIdInput = document.getElementById("userId");
-const passwordInput = document.getElementById("password");
-const errorMessage = document.getElementById("errorMessage");
-const homeFeed = document.querySelector("[data-home-feed]");
+const AUTH_STORAGE_KEY = "teamCLoggedIn";
+const VALID_USERNAME = "user";
+const VALID_PASSWORD = "password";
 
 const photoItems = [
   {
@@ -56,7 +51,13 @@ const suggestedQueries = [
 
 const recentPosts = ["中目黒の静かなカフェ", "下北沢の週末ランチ", "代々木公園の散歩コース"];
 
-const renderFeed = () => {
+const isAuthed = () => sessionStorage.getItem(AUTH_STORAGE_KEY) === "true";
+
+const setAuthed = () => {
+  sessionStorage.setItem(AUTH_STORAGE_KEY, "true");
+};
+
+const renderFeed = (homeFeed) => {
   if (!homeFeed) {
     return;
   }
@@ -76,9 +77,7 @@ const renderFeed = () => {
     .join("");
 };
 
-const renderSearchData = () => {
-  const searchSection = document.querySelector(".search-view");
-
+const renderSearchData = (searchSection) => {
   if (!searchSection) {
     return;
   }
@@ -95,9 +94,7 @@ const renderSearchData = () => {
   }
 };
 
-const renderMyPageData = () => {
-  const myPageSection = document.querySelector('.mypage-view');
-
+const renderMyPageData = (myPageSection) => {
   if (!myPageSection) {
     return;
   }
@@ -110,46 +107,79 @@ const renderMyPageData = () => {
   }
 };
 
-const showView = (target) => {
-  views.forEach((view) => {
-    view.classList.toggle("is-active", view.dataset.view === target);
-  });
-};
+const initLoginPage = () => {
+  const loginForm = document.getElementById("loginForm");
+  const userIdInput = document.getElementById("userId");
+  const passwordInput = document.getElementById("password");
+  const errorMessage = document.getElementById("errorMessage");
 
-const showApp = (target = "home") => {
-  nav.hidden = false;
-  showView(target);
-
-  navButtons.forEach((button) => {
-    const isActive = button.dataset.target === target;
-    button.classList.toggle("is-active", isActive);
-    button.setAttribute("aria-pressed", String(isActive));
-  });
-};
-
-renderFeed();
-renderSearchData();
-renderMyPageData();
-
-loginForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-
-  const userId = userIdInput.value.trim();
-  const password = passwordInput.value.trim();
-
-  if (!userId || !password) {
-    errorMessage.textContent = "IDとパスワードを入力してください。";
+  if (!loginForm || !userIdInput || !passwordInput || !errorMessage) {
     return;
   }
 
-  errorMessage.textContent = "";
-  showApp("home");
-});
+  loginForm.addEventListener("submit", (event) => {
+    event.preventDefault();
 
-navButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    showApp(button.dataset.target);
+    const userId = userIdInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (userId === VALID_USERNAME && password === VALID_PASSWORD) {
+      errorMessage.textContent = "";
+      setAuthed();
+      window.location.href = "home.html";
+      return;
+    }
+
+    errorMessage.textContent = "ユーザー名またはパスワードが違います。";
   });
-});
 
-userIdInput.focus();
+  userIdInput.focus();
+};
+
+const initHomePage = () => {
+  if (!isAuthed()) {
+    return;
+  }
+
+  const views = Array.from(document.querySelectorAll(".view"));
+  const nav = document.querySelector(".nav");
+  const navButtons = Array.from(document.querySelectorAll(".nav button"));
+  const homeFeed = document.querySelector("[data-home-feed]");
+  const searchSection = document.querySelector(".search-view");
+  const myPageSection = document.querySelector(".mypage-view");
+
+  const showView = (target) => {
+    views.forEach((view) => {
+      view.classList.toggle("is-active", view.dataset.view === target);
+    });
+  };
+
+  const showApp = (target = "home") => {
+    if (nav) {
+      nav.hidden = false;
+    }
+
+    showView(target);
+
+    navButtons.forEach((button) => {
+      const isActive = button.dataset.target === target;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+    });
+  };
+
+  renderFeed(homeFeed);
+  renderSearchData(searchSection);
+  renderMyPageData(myPageSection);
+
+  navButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      showApp(button.dataset.target);
+    });
+  });
+
+  showApp("home");
+};
+
+initLoginPage();
+initHomePage();
